@@ -264,10 +264,15 @@ NSString *const kIQTextFieldReturnKeyType   =   @"kIQTextFieldReturnKeyType";
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    if ([self.delegate respondsToSelector:@selector(textField:shouldChangeCharactersInRange:replacementString:)])
-        return [self.delegate textField:textField shouldChangeCharactersInRange:range replacementString:string];
-    else
-        return YES;
+	if ([self.delegate respondsToSelector:@selector(textField:shouldChangeCharactersInRange:replacementString:)]) {
+		return [self.delegate textField:textField shouldChangeCharactersInRange:range replacementString:string];
+	}
+	NSDictionary *dict = [self textFieldCachedInfo:textField];
+	id delegate = dict[kIQTextFieldDelegate];
+	if ([delegate respondsToSelector:@selector(textField:shouldChangeCharactersInRange:replacementString:)]) {
+		return [delegate textField:textField shouldChangeCharactersInRange:range replacementString:string];
+	}
+	return YES;
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField
